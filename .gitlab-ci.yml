@@ -15,7 +15,7 @@ stages:
     paths:
       - .m2/repository/
 
-# ── Stage 1: Maven build ──────────────────────────────────────────────
+# ── Stage 1: Maven build ─────────────────────────────────────────────
 build:
   extends: .maven-cache
   stage: build
