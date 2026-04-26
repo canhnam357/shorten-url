@@ -25,7 +25,7 @@ services:
 
   app:
     build: .
-    image: shorten-url-app:latest
+    image: canhnam357/shorten-url-app:latest
     container_name: shorten-url-app
     restart: always
     ports:

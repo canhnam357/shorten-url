@@ -57,26 +57,24 @@ deploy:
   image: alpine:latest
   tags:
     - docker
+  dependencies: []
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
   script:
     - |
       ssh $VM_USER@$VM_HOST "
-        # 1. Đi vào thư mục chứa docker-compose.yml và .env
-        cd ~/shorten_url &&
-      
-        # 2. Login để có quyền pull image mới
         echo '$CI_REGISTRY_PASSWORD' | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin &&
-      
-        # 3. Pull duy nhất image của App (không pull lại mysql/redis nếu không cần)
-        docker compose pull url-app &&
-      
-        # 4. Up lại hệ thống. 
-        # Docker Compose sẽ tự động nhận biết chỉ có App thay đổi và restart mình nó.
-        # Nó sẽ tự dùng file .env tại thư mục này.
-        docker compose up -d --remove-orphans &&
-      
-        # 5. Dọn dẹp image cũ
-        docker image prune -f &&
-      
+        docker pull $CI_REGISTRY_IMAGE:latest &&
+        docker stop shorten-url-app || true &&
+        docker rm shorten-url-app || true &&
+        docker run -d --name shorten-url-app --restart unless-stopped \
+          --network ubuntu_default \
+          --env-file /home/ubuntu/.env \
+          -p 8080:8080 $CI_REGISTRY_IMAGE:latest &&
         docker logout
       "
   only:
