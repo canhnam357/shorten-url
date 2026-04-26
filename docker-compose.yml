@@ -25,8 +25,8 @@ services:
 
   app:
     build: .
-    image: canhnam357/shorten-url-app:latest
-    container_name: shorten-url-app
+    image: canhnam357/shorten-url:latest
+    container_name: shorten-url
     restart: always
     ports:
       - "8080:8080"

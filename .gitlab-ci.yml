@@ -69,9 +69,9 @@ deploy:
       ssh $VM_USER@$VM_HOST "
         echo '$CI_REGISTRY_PASSWORD' | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin &&
         docker pull $CI_REGISTRY_IMAGE:latest &&
-        docker stop shorten-url-app || true &&
-        docker rm shorten-url-app || true &&
-        docker run -d --name shorten-url-app --restart unless-stopped \
+        docker stop shorten-url || true &&
+        docker rm shorten-url || true &&
+        docker run -d --name shorten-url --restart unless-stopped \
           --network ubuntu_default \
           --env-file /home/ubuntu/.env \
           -p 8080:8080 $CI_REGISTRY_IMAGE:latest &&
