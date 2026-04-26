@@ -73,7 +73,7 @@ deploy:
         docker rm shorten-url-app || true &&
         docker run -d --name shorten-url-app --restart unless-stopped \
           --network ubuntu_default \
-          --env-file /home/ubuntu/shorten_url/.env \
+          --env-file /home/ubuntu/.env \
           -p 8080:8080 $CI_REGISTRY_IMAGE:latest &&
         docker logout
       "
