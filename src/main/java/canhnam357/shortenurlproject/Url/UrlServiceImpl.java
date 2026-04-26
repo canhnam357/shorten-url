@@ -75,6 +75,10 @@ public class UrlServiceImpl implements UrlService{
             else {
                 code += (c - '0' + 52);
             }
+            if (code > (1L << (BIT_LENGTH_TIMESTAMP + BIT_LENGTH_ID + 1))) {
+                code = -1;
+                break;
+            }
         }
         return code;
     }
@@ -109,5 +113,11 @@ public class UrlServiceImpl implements UrlService{
         return url.map(value -> ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .header(HttpHeaders.LOCATION, value.getLongUrl())
                 .build()).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<?> resolve(String shortUrl) {
+        Optional<Url> url = urlRepository.findById(getCode(shortUrl));
+        return url.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

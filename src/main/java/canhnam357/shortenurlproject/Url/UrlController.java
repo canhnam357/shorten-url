@@ -26,4 +26,8 @@ public class UrlController {
         }
         return urlService.shortenUrl(newShortenUrlRequest.longUrl());
     }
+    @RequestMapping("/resolve/{shortUrl}")
+    public ResponseEntity<?> resolve(@PathVariable String shortUrl) {
+        return urlService.resolve(shortUrl);
+    }
 }
