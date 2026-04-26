@@ -1,5 +1,7 @@
-package canhnam357.shortenurlproject.Url;
+package canhnam357.shortenurlproject.controller;
 
+import canhnam357.shortenurlproject.dto.UrlRequest;
+import canhnam357.shortenurlproject.service.UrlService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,14 +22,10 @@ public class UrlController {
     }
 
     @RequestMapping("/new")
-    public ResponseEntity<?> shortenUrl(@RequestBody NewShortenUrlRequest newShortenUrlRequest) {
+    public ResponseEntity<?> shortenUrl(@RequestBody UrlRequest newShortenUrlRequest) {
         if (newShortenUrlRequest == null) {
             return ResponseEntity.badRequest().build();
         }
         return urlService.shortenUrl(newShortenUrlRequest.longUrl());
-    }
-    @RequestMapping("/resolve/{shortUrl}")
-    public ResponseEntity<?> resolve(@PathVariable String shortUrl) {
-        return urlService.resolve(shortUrl);
     }
 }

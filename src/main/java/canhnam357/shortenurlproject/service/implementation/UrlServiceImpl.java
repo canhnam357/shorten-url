@@ -1,5 +1,11 @@
-package canhnam357.shortenurlproject.Url;
+package canhnam357.shortenurlproject.service.implementation;
 
+import canhnam357.shortenurlproject.dto.GeneralResponse;
+import canhnam357.shortenurlproject.dto.UrlResponse;
+import canhnam357.shortenurlproject.exception.TooManyRequestException;
+import canhnam357.shortenurlproject.entity.Url;
+import canhnam357.shortenurlproject.repository.UrlRepository;
+import canhnam357.shortenurlproject.service.UrlService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UrlServiceImpl implements UrlService{
+public class UrlServiceImpl implements UrlService {
 
     private final UrlRepository urlRepository;
 
@@ -30,7 +36,7 @@ public class UrlServiceImpl implements UrlService{
         if (currentEpochSecond == lastEpochSecond) {
             sequence++;
             if (sequence > MAX_ID) {
-                throw new TooManyRequest("Too many requests for the same timestamp");
+                throw new TooManyRequestException("Too many requests for the same timestamp");
             }
         } else {
             sequence = 0L;
@@ -86,38 +92,46 @@ public class UrlServiceImpl implements UrlService{
 
     @Override
     public ResponseEntity<?> shortenUrl(String longUrl) {
-        try {
-            long currentSecond = Instant.now().getEpochSecond();
-            long id = getNextId(currentSecond);
-            long code = calculateCode(lastEpochSecond, id);
-            String shortUrl = getCodeString(code);
-            Url url = Url.builder()
-                    .id(code)
-                    .longUrl(longUrl)
-                    .shortUrl(shortUrl)
-                    .build();
 
-            urlRepository.save(url);
-            return ResponseEntity.ok(url);
-        } catch (TooManyRequest e) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // 1. Get the current time (Epoch Second)
+        long currentSecond = Instant.now().getEpochSecond();
+
+        // 2. Generate id for this time
+        long id = getNextId(currentSecond);
+
+        // 3. Calculate the code
+        long code = calculateCode(lastEpochSecond, id);
+
+        // 4. Convert the code to string
+        String shortUrl = getCodeString(code);
+
+        // 5. Create a new URL object
+        Url url = Url.builder()
+                .id(code)
+                .longUrl(longUrl)
+                .shortUrl(shortUrl)
+                .build();
+
+        // 6. Save the URL to the database
+        urlRepository.save(url);
+
+        // 7. Return the shortened URL
+        GeneralResponse<Object> res = new GeneralResponse<>(Instant.now(), "Shortened URL", 200, new UrlResponse(url.getShortUrl(), url.getLongUrl()));
+        return ResponseEntity.ok(res);
     }
 
     @Override
     public ResponseEntity<?> expandUrl(String shortUrl) {
+
+        // 1. Convert the short URL to a code
         long code = getCode(shortUrl);
+
+        // 2. Find the URL in the database
         Optional<Url> url = urlRepository.findById(code);
+
+        // 3. If the URL exists, redirect to the long URL otherwise return 404
         return url.map(value -> ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .header(HttpHeaders.LOCATION, value.getLongUrl())
                 .build()).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Override
-    public ResponseEntity<?> resolve(String shortUrl) {
-        Optional<Url> url = urlRepository.findById(getCode(shortUrl));
-        return url.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

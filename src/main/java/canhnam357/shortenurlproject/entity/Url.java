@@ -1,4 +1,4 @@
-package canhnam357.shortenurlproject.Url;
+package canhnam357.shortenurlproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
