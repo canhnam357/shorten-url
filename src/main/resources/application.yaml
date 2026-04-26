@@ -1,3 +1,15 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: ShortenURLProject
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: root
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
