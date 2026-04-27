@@ -23,7 +23,7 @@ public class TokenBucketRateLimitFilter extends OncePerRequestFilter {
     private static final String KEY_PREFIX   = "rate_limit:";
     private static final long   CAPACITY     = 1024;
     private static final double REFILL_RATE  = 20.0;
-    private static final long   TTL_SECONDS  = 0;
+    private static final long   TTL_SECONDS  = 60;
 
     private static final DefaultRedisScript<Long> TOKEN_BUCKET_SCRIPT;
 
