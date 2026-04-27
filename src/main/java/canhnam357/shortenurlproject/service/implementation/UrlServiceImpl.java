@@ -78,8 +78,12 @@ public class UrlServiceImpl implements UrlService {
             else if (c >= 'a' && c <= 'z') {
                 code += (c - 'a' + 26);
             }
-            else {
+            else if (c >= '0' && c <= '9') {
                 code += (c - '0' + 52);
+            }
+            else {
+                code = -1;
+                break;
             }
             if (code > (1L << (BIT_LENGTH_TIMESTAMP + BIT_LENGTH_ID + 1))) {
                 code = -1;
