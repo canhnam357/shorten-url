@@ -66,8 +66,6 @@ public class TokenBucketRateLimitFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("Request received: " + request.getRequestURI());
-
         String key = KEY_PREFIX + request.getRequestURI();
 
         long nowMs         = System.currentTimeMillis();

@@ -20,7 +20,6 @@ public class UrlCacheService {
 
     @Cacheable(value = "URLs", key = "#shortUrl", unless = "#result == null")
     public Url findByShortUrl(String shortUrl) {
-        log.info(">>> CACHE MISS — hitting database for: {}", shortUrl);
         long code = getCode(shortUrl);
         return urlRepository.findById(code).orElse(null);
     }
