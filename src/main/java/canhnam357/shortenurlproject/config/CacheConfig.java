@@ -45,7 +45,7 @@ public class CacheConfig {
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(defaultConfig)
                 .withCacheConfiguration("URLs",
-                        defaultConfig.entryTtl(Duration.ofHours(24)))
+                        defaultConfig.entryTtl(Duration.ofMinutes(60)))
                 .build();
     }
 }
