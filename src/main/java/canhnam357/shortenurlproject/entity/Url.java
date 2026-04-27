@@ -15,6 +15,8 @@ public class Url implements Persistable<Long> {
     @Id
     private Long id;
     private String shortUrl;
+
+    @Column(name = "long_url", length = 2048)
     private String longUrl;
 
     @Transient

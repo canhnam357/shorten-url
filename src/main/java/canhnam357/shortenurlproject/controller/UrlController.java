@@ -26,6 +26,9 @@ public class UrlController {
         if (newShortenUrlRequest == null) {
             return ResponseEntity.badRequest().build();
         }
+        if (newShortenUrlRequest.longUrl() == null || newShortenUrlRequest.longUrl().isBlank() || newShortenUrlRequest.longUrl().length() > 2048) {
+            return ResponseEntity.badRequest().build();
+        }
         return urlService.shortenUrl(newShortenUrlRequest.longUrl());
     }
 }
