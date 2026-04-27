@@ -14,10 +14,10 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class RateLimitFilter extends OncePerRequestFilter {
+public class FixedWindowRateLimitFilter extends OncePerRequestFilter {
     private final StringRedisTemplate redisTemplate;
-    final String redisKey = "rate_limit:";
-    final long rateLimit = 1024;
+    final String redisKey = "rate_limit:ip:";
+    final long rateLimit = 50;
 
 
     @Override

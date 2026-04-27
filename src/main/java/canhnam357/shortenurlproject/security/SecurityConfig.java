@@ -19,7 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final RateLimitFilter rateLimitFilter;
+    private final FixedWindowRateLimitFilter fixedWindowRateLimitFilter;
+    private final TokenBucketRateLimitFilter tokenBucketRateLimitFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +28,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(fixedWindowRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenBucketRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
