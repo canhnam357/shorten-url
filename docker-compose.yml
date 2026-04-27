@@ -1,6 +1,24 @@
 version: "3.8"
 
 services:
+  redis:
+    image: redis:7.2.13
+    container_name: ${REDIS_CONTAINER}
+    restart: always
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+      --save "3600 1 300 100 60 10000"
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
+
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -23,19 +41,20 @@ services:
         limits:
           memory: 512m
 
-  app:
-    build: .
-    image: canhnam357/shorten-url:latest
-    container_name: shorten-url
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: "jdbc:mysql://${MYSQL_CONTAINER}:3306/${MYSQL_DB_NAME}"
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#  app:
+#    build: .
+#    image: canhnam357/shorten-url:latest
+#    container_name: shorten-url
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    environment:
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://${MYSQL_CONTAINER}:3306/${MYSQL_DB_NAME}"
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 
 volumes:
   mysql_data:
+  redis-data:
