@@ -48,7 +48,6 @@ public class TokenBucketRateLimitFilter extends OncePerRequestFilter {
             local new_tokens    = math.min(capacity, tokens + refilled)
             local allowed = 0
             if new_tokens >= 1 then
-                -- Cho phép: tiêu thụ 1 token
                 new_tokens = new_tokens - 1
                 last_refill = now
                 allowed = 1
