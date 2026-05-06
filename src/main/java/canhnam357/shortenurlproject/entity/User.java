@@ -4,7 +4,8 @@ import canhnam357.shortenurlproject.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,32 +22,25 @@ public class User {
     private UUID id;
 
     @Column(unique = true, nullable = false)
-    private String username;
+    private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
-    private String email;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
-
     @Builder.Default
-    private Boolean enabled = false;
+    private Role role = Role.USER;
 
+    @Column(nullable = false)
     @Builder.Default
-    private Boolean locked = false;
+    private boolean enabled = false;
 
-    private ZonedDateTime createdAt;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean locked = false;
 
-    private ZonedDateTime lastLoginAt;
-
-    private ZonedDateTime lastPasswordResetAt;
-
-    @PrePersist
-    void onCreate() {
-        createdAt = ZonedDateTime.now();
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Url> urls = new ArrayList<>();
 }

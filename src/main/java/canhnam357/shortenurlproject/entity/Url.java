@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.data.domain.Persistable;
 
 @Entity
-@Table(name = "url")
+@Table(name = "urls")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -18,6 +18,10 @@ public class Url implements Persistable<Long> {
 
     @Column(name = "long_url", length = 2048)
     private String longUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Transient
     private boolean isNew = true;

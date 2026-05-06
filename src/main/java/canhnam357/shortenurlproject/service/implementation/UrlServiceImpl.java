@@ -1,7 +1,7 @@
 package canhnam357.shortenurlproject.service.implementation;
 
 import canhnam357.shortenurlproject.dto.GeneralResponse;
-import canhnam357.shortenurlproject.dto.UrlResponse;
+import canhnam357.shortenurlproject.dto.url.UrlResponse;
 import canhnam357.shortenurlproject.entity.Url;
 import canhnam357.shortenurlproject.service.UrlCacheService;
 import canhnam357.shortenurlproject.service.UrlService;
