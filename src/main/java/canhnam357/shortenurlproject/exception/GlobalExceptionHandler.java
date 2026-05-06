@@ -60,7 +60,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     * */
 
 
-
     /*
      * BEGIN ExceptionHandler for Authentication
      * */
